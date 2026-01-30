@@ -1,0 +1,22 @@
+.metadata/
+# --- Frontend Ignored Files ---
+inventory-management-frontend/node_modules/
+inventory-management-frontend/dist/
+inventory-management-frontend/build/
+inventory-management-frontend/.env
+inventory-management-frontend/.env.local
+
+# --- Backend Ignored Files ---
+inventory-management-backend/target/
+inventory-management-backend/.mvn/
+inventory-management-backend/.settings/
+inventory-management-backend/.classpath
+inventory-management-backend/.project
+inventory-management-backend/.factorypath
+inventory-management-backend/*.log
+**/*.class
+
+# --- System Files ---
+.DS_Store
+.vscode/
+.idea/
