@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Inventory & Order Management SaaS
 
 Engineered an enterprise-grade full-stack solution designed to automate retail supply chains, effectively reducing manual procurement effort by 40%. The system leverages **Spring Boot** and **React 19** to provide a secure, multi-tenant environment with strict Role-Based Access Control (RBAC).
@@ -10,3 +11,7 @@ Engineered an enterprise-grade full-stack solution designed to automate retail s
 ### Tech Stack
 *   **Backend:** Java, Spring Boot 3.5, Hibernate, MySQL, JWT Security.
 *   **Frontend:** React 19, Vite, Tailwind CSS, TanStack Query, Recharts.
+=======
+# student_management_api
+student management api developed using java spring boot backend and test it using postman tool.it is good for beginners to learn  rest api's
+>>>>>>> dc11f2b72a162fb905844ba8557ecb3116241fee
