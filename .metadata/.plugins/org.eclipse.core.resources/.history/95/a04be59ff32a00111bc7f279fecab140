@@ -1,0 +1,21 @@
+# Development Profile Configuration
+spring.application.name=student-management-api-dev
+
+# Server
+server.port=8080
+
+# MySQL - Development
+spring.datasource.url=jdbc:mysql://localhost:3306/student_db
+spring.datasource.username=root
+spring.datasource.password=Bhanu@143
+
+# JPA - Development (create-drop for testing)
+spring.jpa.hibernate.ddl-auto=create-drop
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+
+# Logging - Development
+logging.level.org.springframework=DEBUG
+logging.level.com.studentapi=DEBUG
+logging.level.org.hibernate.SQL=DEBUG
+logging.level.org.hibernate.type.descriptor.sql.BasicBinder=TRACE

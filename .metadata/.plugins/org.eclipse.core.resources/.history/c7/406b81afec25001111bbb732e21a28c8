@@ -1,0 +1,5 @@
+package com.studentapi.mapper;
+
+public class StudentMapper {
+
+}

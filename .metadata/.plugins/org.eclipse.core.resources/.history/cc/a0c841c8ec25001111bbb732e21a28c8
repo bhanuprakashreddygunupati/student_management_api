@@ -1,0 +1,5 @@
+package com.studentapi.exception;
+
+public class DuplicateEmailException {
+
+}

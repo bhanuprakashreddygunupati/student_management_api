@@ -1,0 +1,145 @@
+package com.studentapi.service;
+
+import com.studentapi.dto.StudentRequestDTO;
+import com.studentapi.dto.StudentResponseDTO;
+import com.studentapi.entity.Student;
+import com.studentapi.exception.StudentNotFoundException;
+import com.studentapi.repository.StudentRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+@Transactional
+public class StudentServiceImpl implements StudentService {
+
+    private final StudentRepository studentRepository;
+
+    @Autowired
+    public StudentServiceImpl(StudentRepository studentRepository) {
+        this.studentRepository = studentRepository;
+    }
+
+    // ==================== CREATE ====================
+    @Override
+    public StudentResponseDTO createStudent(StudentRequestDTO requestDTO) {
+        
+        // Check if email already exists
+        if (studentRepository.existsByEmail(requestDTO.getEmail())) {
+            throw new RuntimeException("Email already exists: " + requestDTO.getEmail());
+        }
+
+        // Convert DTO to Entity
+        Student student = new Student();
+        student.setName(requestDTO.getName());
+        student.setEmail(requestDTO.getEmail());
+        student.setCourse(requestDTO.getCourse());
+        student.setPhone(requestDTO.getPhone());
+
+        // Save to database
+        Student savedStudent = studentRepository.save(student);
+
+        // Convert Entity to Response DTO
+        return mapToResponseDTO(savedStudent);
+    }
+
+    // ==================== GET ALL ====================
+    @Override
+    @Transactional(readOnly = true)
+    public List<StudentResponseDTO> getAllStudents() {
+        
+        List<Student> students = studentRepository.findAll();
+        
+        return students.stream()
+                .map(this::mapToResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    // ==================== GET BY ID ====================
+    @Override
+    @Transactional(readOnly = true)
+    public StudentResponseDTO getStudentById(Long id) {
+        
+        Student student = studentRepository.findById(id)
+                .orElseThrow(() -> new StudentNotFoundException("Student not found with ID: " + id));
+
+        return mapToResponseDTO(student);
+    }
+
+    // ==================== UPDATE ====================
+    @Override
+    public StudentResponseDTO updateStudent(Long id, StudentRequestDTO requestDTO) {
+        
+        // Find existing student
+        Student existingStudent = studentRepository.findById(id)
+                .orElseThrow(() -> new StudentNotFoundException("Student not found with ID: " + id));
+
+        // Check if new email belongs to another student
+        if (!existingStudent.getEmail().equals(requestDTO.getEmail()) 
+                && studentRepository.existsByEmail(requestDTO.getEmail())) {
+            throw new RuntimeException("Email already exists: " + requestDTO.getEmail());
+        }
+
+        // Update fields
+        existingStudent.setName(requestDTO.getName());
+        existingStudent.setEmail(requestDTO.getEmail());
+        existingStudent.setCourse(requestDTO.getCourse());
+        existingStudent.setPhone(requestDTO.getPhone());
+
+        // Save updated student
+        Student updatedStudent = studentRepository.save(existingStudent);
+
+        return mapToResponseDTO(updatedStudent);
+    }
+
+    // ==================== DELETE ====================
+    @Override
+    public String deleteStudent(Long id) {
+        
+        Student student = studentRepository.findById(id)
+                .orElseThrow(() -> new StudentNotFoundException("Student not found with ID: " + id));
+
+        studentRepository.delete(student);
+        
+        return "Student deleted successfully with ID: " + id;
+    }
+
+    // ==================== SEARCH BY NAME ====================
+    @Override
+    @Transactional(readOnly = true)
+    public List<StudentResponseDTO> searchStudentsByName(String name) {
+        
+        List<Student> students = studentRepository.findByNameContainingIgnoreCase(name);
+        
+        return students.stream()
+                .map(this::mapToResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    // ==================== GET BY COURSE ====================
+    @Override
+    @Transactional(readOnly = true)
+    public List<StudentResponseDTO> getStudentsByCourse(String course) {
+        
+        List<Student> students = studentRepository.findByCourse(course);
+        
+        return students.stream()
+                .map(this::mapToResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    // ==================== HELPER METHOD ====================
+    private StudentResponseDTO mapToResponseDTO(Student student) {
+        return StudentResponseDTO.builder()
+                .id(student.getId())
+                .name(student.getName())
+                .email(student.getEmail())
+                .course(student.getCourse())
+                .phone(student.getPhone())
+                .createdAt(student.getCreatedAt())
+                .updatedAt(student.getUpdatedAt())
+                .build();
+    }
+}

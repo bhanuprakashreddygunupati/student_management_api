@@ -1,0 +1,5 @@
+package com.studentapi.dto;
+
+public class PagedResponse {
+
+}

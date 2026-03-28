@@ -1,0 +1,93 @@
+package com.studentapi.controller;
+
+import com.studentapi.dto.StudentRequestDTO;
+import com.studentapi.dto.StudentResponseDTO;
+import com.studentapi.service.StudentService;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/students")
+@CrossOrigin(origins = "*")
+public class StudentController {
+
+    private final StudentService studentService;
+
+    @Autowired
+    public StudentController(StudentService studentService) {
+        this.studentService = studentService;
+    }
+
+    // ==================== CREATE STUDENT ====================
+    // POST http://localhost:8080/api/students
+    @PostMapping
+    public ResponseEntity<StudentResponseDTO> createStudent(
+            @Valid @RequestBody StudentRequestDTO requestDTO) {
+        System.out.println(requestDTO);
+
+        StudentResponseDTO response = studentService.createStudent(requestDTO);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    // ==================== GET ALL STUDENTS ====================
+    // GET http://localhost:8080/api/students
+    @GetMapping
+    public ResponseEntity<List<StudentResponseDTO>> getAllStudents() {
+
+        List<StudentResponseDTO> students = studentService.getAllStudents();
+        return ResponseEntity.ok(students);
+    }
+
+    // ==================== GET STUDENT BY ID ====================
+    // GET http://localhost:8080/api/students/1
+    @GetMapping("/{id}")
+    public ResponseEntity<StudentResponseDTO> getStudentById(@PathVariable Long id) {
+
+        StudentResponseDTO student = studentService.getStudentById(id);
+        return ResponseEntity.ok(student);
+    }
+
+    // ==================== UPDATE STUDENT ====================
+    // PUT http://localhost:8080/api/students/1
+    @PutMapping("/{id}")
+    public ResponseEntity<StudentResponseDTO> updateStudent(
+            @PathVariable Long id,
+            @Valid @RequestBody StudentRequestDTO requestDTO) {
+
+        StudentResponseDTO response = studentService.updateStudent(id, requestDTO);
+        return ResponseEntity.ok(response);
+    }
+
+    // ==================== DELETE STUDENT ====================
+    // DELETE http://localhost:8080/api/students/1
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteStudent(@PathVariable Long id) {
+
+        String message = studentService.deleteStudent(id);
+        return ResponseEntity.ok(message);
+    }
+
+    // ==================== SEARCH BY NAME ====================
+    // GET http://localhost:8080/api/students/search?name=Rahul
+    @GetMapping("/search")
+    public ResponseEntity<List<StudentResponseDTO>> searchStudents(
+            @RequestParam String name) {
+
+        List<StudentResponseDTO> students = studentService.searchStudentsByName(name);
+        return ResponseEntity.ok(students);
+    }
+
+    // ==================== GET BY COURSE ====================
+    // GET http://localhost:8080/api/students/course/Java
+    @GetMapping("/course/{course}")
+    public ResponseEntity<List<StudentResponseDTO>> getStudentsByCourse(
+            @PathVariable String course) {
+
+        List<StudentResponseDTO> students = studentService.getStudentsByCourse(course);
+        return ResponseEntity.ok(students);
+    }
+}
